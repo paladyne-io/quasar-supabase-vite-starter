@@ -1,4 +1,4 @@
-# Quasar Supabase Vite Starter (quasar-supabase-vite-starter)
+# Quasar Supabase Vite Starter
 
 Translated the original project to English with the following changes:
 
