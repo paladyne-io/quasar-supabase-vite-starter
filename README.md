@@ -5,10 +5,9 @@ Translated the original project to English with the following changes:
 1) Use vite instead of Webpack
 2) Use Supabase V2 JavaScript client (Released in August and still RC at this time)
 3) Added a second Supabase boot file to access the Router (Intention is to redirect the Password reset. Requires further testing)
-ToDo
 
-Improve image loading on the (new) Product page.
-
+## ToDo
+1) Improve image loading on the (new) Product page.
 
 Comments and suggestions are welcome
 
