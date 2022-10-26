@@ -1,8 +1,8 @@
 <script setup>
 import { ref, toRefs, watch } from 'vue'
 import useSupabase from '../boot/supabase'
-
 const { supabase } = useSupabase()
+
 const prop = defineProps(['path', 'size'])
 const { path, size } = toRefs(prop)
 
@@ -10,6 +10,12 @@ const emit = defineEmits(['upload', 'update:path'])
 const uploading = ref(false)
 const src = ref('')
 const files = ref()
+
+const fileInput = ref()
+
+function getFile () {
+  fileInput.value.click()
+}
 
 const downloadImage = async () => {
   try {
@@ -69,11 +75,15 @@ watch(path, () => {
       :style="{ height: size + 'em', width: size + 'em' }"
     />
 
-    <div :style="{ width: size + 'em' }">
-      <label class="button primary block" for="single">
-        {{ uploading ? 'Uploading ...' : 'Upload' }}
-      </label>
+    <div class="q-pt-sm">
+      <q-btn
+        @click="getFile"
+        :label="uploading ? 'Uploading ...' : 'Upload Avatar'"
+      >
+      </q-btn>
+
       <input
+        ref="fileInput"
         style="visibility: hidden; position: absolute"
         type="file"
         id="single"

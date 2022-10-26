@@ -1,17 +1,8 @@
 <template>
   <q-page class="flex flex-center">
     <div v-if="user">
-      <form class="form-widget" @submit.prevent="updateProfile">
-        <!-- Add to body -->
-        <AvatarComponent
-          v-model:path="avatarUrl"
-          @upload="updateProfile"
-          size="10"
-        />
-        <!-- Other form elements -->
-      </form>
       <p>
-        Hello,
+        Hello
         <span v-if="user.user_metadata.name">
           <strong>{{ user.user_metadata.name }}</strong></span
         >
@@ -19,6 +10,18 @@
           <strong>{{ user.email }}</strong></span
         >
       </p>
+      <!--
+      <form class="form-widget" @submit.prevent="updateProfile">
+        <AvatarComponent
+          v-model:path="avatarUrl"
+          @upload="updateProfile"
+          size="10"
+        />
+      </form>
+      -->
+      <div class="full-width text-center">
+        <q-toggle v-model="darkModeStatus" label="Dark mode" @click="toggled" />
+      </div>
     </div>
     <div v-else>
       <q-img src="~assets/howdy.gif" width="120" class="q-my-lg"> </q-img>
@@ -43,26 +46,39 @@
 <script>
 import { ref, defineComponent, onMounted } from 'vue'
 import UseAuthUser from '../composables/UseAuthUser'
-import AvatarComponent from '../components/AvatarComponent.vue'
+// import AvatarComponent from '../components/AvatarComponent.vue'
 import useSupabase from '../boot/supabase'
+// import { useQuasar } from 'quasar'
 
 const { supabase } = useSupabase()
 
 export default defineComponent({
   name: 'IndexPage',
 
-  components: { AvatarComponent },
+  // components: { AvatarComponent },
   setup () {
     const { user } = UseAuthUser()
     const userVal = user.value
     const avatarUrl = ref('')
     const loading = ref(false)
 
+    /**
+    const $q = useQuasar()
+    const darkModeStatus = ref($q.dark.isActive)
+  */
+
     onMounted(() => {
       loading.value = true
       // const { user } = session.value
       // AvatarComponent.downloadImage()
     })
+
+    /**
+    function toggled () {
+      // console.log(darkModeStatus.value)
+      $q.dark.toggle()
+    }
+    */
 
     console.log(JSON.stringify(user.value))
     console.log('Email:' + userVal.email)
@@ -92,8 +108,10 @@ export default defineComponent({
 
     return {
       user,
-      updateProfile,
-      avatarUrl
+      avatarUrl,
+      darkModeStatus,
+      toggled,
+      updateProfile
     }
   }
 })

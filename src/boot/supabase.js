@@ -12,7 +12,7 @@ if (!supabaseUrl || !supabaseKey) {
 const supabase = createClient(supabaseUrl, supabaseKey)
 console.log('Loaded supabase.')
 
-// moved to supabase- monitor
+// moved to supabase-monitor
 supabase.auth.onAuthStateChange((event, session) => {
   const { user } = useAuthUser()
   user.value = session?.user || null
@@ -21,29 +21,3 @@ supabase.auth.onAuthStateChange((event, session) => {
 export default function useSupabase() {
   return { supabase }
 }
-// moved to supabase- monitor
-/*
-export default boot ({ app, router, redirect }) => {
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    // const { user } = useAuthUser()
-    // user.value = session?.user || null
-
-    console.log('Router: ' + router)
-
-    if (event === 'PASSWORD_RECOVERY') {
-      // better tio send to a password reset page
-      // redirect({ path: 'reset-password' })
-
-    }
-  })
-  */
-// app.config.globalProperties.$supabase = supabaseClient
-// return supabaseClient
-// }
-
-// console.log('Init Supabase: ', supabase);
-/**
-export default function useSupabase () {
-  return { supabase }
-}
-*/

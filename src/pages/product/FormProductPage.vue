@@ -13,24 +13,27 @@
         <q-card-section>
           <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-md">
             <div class="row">
-              <div class="col-3 q-pt-xs text-center">
-                Current Image
-                <q-img width="42px" fit="contain" :src="form.img_url" />
+              <div class="q-pr-md">
+                <q-img width="64px" fit="contain" :src="form.img_url" />
               </div>
-              <q-space />
-              <div class="col-4 q-pt-xs">
+              <!-- Max file size = 3MB -->
+              <div>
                 <q-file
-                  label="Choose Image"
+                  label="Choose image"
+                  max-file-size="3000000"
                   stack-label
                   v-model="img"
                   accept="image/*"
+                  @update:model-value="updateFile()"
                 />
               </div>
+              <!--
               <q-space />
-              <div class="col-3 q-pt-xs  text-center">
+              <div v-show="imgUrl" class="col-3 q-pt-xs text-center">
                 New Image
-                <q-img width="42px" fit="contain" :src="form.img_url" />
+                <q-img width="42px" fit="contain" :src="imgUrl" />
               </div>
+             -->
             </div>
             <q-input
               outlined
@@ -138,6 +141,7 @@ export default defineComponent({
     const optionsCategory = ref([])
     let product = {}
     const img = ref(null)
+    const imgUrl = ref()
 
     const { post, getById, update, list, uploadImg } = useApi()
     const { notifyError, notifySuccess } = useNotify()
@@ -172,7 +176,8 @@ export default defineComponent({
           // console.log('Upload imageUrl: ' + JSON.stringify(imageUrl))
 
           const imgUrl = await uploadImg(img.value, 'products')
-          form.value.img_url = imgUrl
+          // form.value.img_url = imgUrl
+          form.value.img_url = URL.createObjectURL(img.value)
           console.log('img URL: ' + imgUrl)
         }
         if (isUpdate.value) {
@@ -193,8 +198,8 @@ export default defineComponent({
       try {
         product = await getById(table, id)
         form.value = product
-        console.log('handlerGetProduct... ' + JSON.stringify(product))
-        console.log('Image URL... ' + form.value.img_url)
+        // console.log('handlerGetProduct: ' + JSON.stringify(product))
+        // console.log('Image URL: ' + form.value.img_url)
       } catch (error) {
         notifyError(error.message)
       }
@@ -216,7 +221,14 @@ export default defineComponent({
       form,
       isUpdate,
       optionsCategory,
-      img
+      img,
+      imgUrl,
+      updateFile () {
+        // console.log('updateFile...')
+        // imgUrl.value = URL.createObjectURL(img.value)
+        form.value.img_url = URL.createObjectURL(img.value)
+        // console.log('updateFile: ' + imgUrl.value)
+      }
     }
   }
 })

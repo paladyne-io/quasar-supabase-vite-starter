@@ -11,7 +11,15 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Inventory </q-toolbar-title>
+        <q-toolbar-title>Quasar Inventory</q-toolbar-title>
+        <q-space />
+        <div>
+          <q-toggle
+            v-model="darkModeStatus"
+            label="Dark mode"
+            @click="toggled"
+          />
+        </div>
 
         <q-btn-dropdown flat color="white" icon="person">
           <q-list>
@@ -55,6 +63,7 @@ import EssentialLink from 'components/EssentialLink.vue'
 import UseAuthUser from '../composables/UseAuthUser'
 import useNotify from 'src/composables/UseNotify'
 import useDialog from 'src/composables/UseDialog'
+import { useQuasar } from 'quasar'
 
 const mdiIcon = name => {
   return 'mdi-' + name
@@ -94,6 +103,14 @@ export default defineComponent({
     const { logout } = UseAuthUser()
     const { notifyError, notifySuccess } = useNotify()
     const { dialogShow } = useDialog()
+
+    const $q = useQuasar()
+    const darkModeStatus = ref($q.dark.isActive)
+
+    function toggled () {
+      // console.log(darkModeStatus.value)
+      $q.dark.toggle()
+    }
 
     const changePassword = async () => {
       router.push('reset-password')
@@ -136,7 +153,9 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
       handlerLogout,
-      changePassword
+      changePassword,
+      darkModeStatus,
+      toggled
     }
   }
 })

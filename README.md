@@ -1,11 +1,11 @@
 # Quasar Supabase Vite Starter
 
-Translated the original project to English with the following changes:
+Translation of the original project to English with the following changes:
 
 1) Use vite instead of Webpack
 2) Use Supabase V2 JavaScript client (Released in August and still RC at this time)
-3) Added a second Supabase boot file (supabase-monitor.js) to access the Quasar/vue Router. (Intention is to redirect the PASSWORD_RECOVERY event. Requires further testing.)
-4) Added a Change Password item to the Logout menu. (The password can only be changed when the user is logged in.)
+3) Added a second Supabase boot file (supabase-monitor.js) to access the Quasar/Vue Router. (Intention is to redirect the PASSWORD_RECOVERY event. Requires further testing.)
+4) Added a 'Change Password' option to the Logout menu. The password can only be changed when the user is logged in.
 
 ## ToDo
 1) Improve image loading on the (new) Product page.

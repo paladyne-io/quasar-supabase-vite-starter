@@ -61,6 +61,10 @@
               class="full-width"
               type="submit"
             ></q-btn>
+            <div class="row full-width">
+              <q-space />
+              <q-btn label="Cancel" to="/" color="secondary"></q-btn>
+            </div>
           </div>
         </q-card-section>
       </q-card>

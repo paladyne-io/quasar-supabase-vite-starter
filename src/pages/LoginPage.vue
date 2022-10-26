@@ -1,6 +1,4 @@
 <template>
-  <a href="https://app.supabase.com/project/dbitdnhtjnfuvkxrhvxz">Supabase</a>
-
   <q-page class="bg-green-1 row justify-center items-center">
     <q-form
       class="square-card row justify-center"
