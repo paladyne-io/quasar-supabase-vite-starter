@@ -6,7 +6,7 @@ const supabaseUrl = process.env.SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_KEY
 
 if (!supabaseUrl || !supabaseKey) {
-  alert('Configuration error. Please contact the author.')
+  alert('Configuration error. Please add a .env file with URL and key. Contact the author for assistance.')
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey)
