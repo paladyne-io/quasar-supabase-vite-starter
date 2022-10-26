@@ -11,15 +11,16 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Estoque
-        </q-toolbar-title>
-
-        <dark-mode-toogle />
+        <q-toolbar-title> Inventory </q-toolbar-title>
 
         <q-btn-dropdown flat color="white" icon="person">
           <q-list>
-            <q-item clickable v-close-popup @click="handleLogout">
+            <q-item clickable v-close-popup @click="changePassword">
+              <q-item-section>
+                <q-item-label>Change Password...</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup @click="handlerLogout">
               <q-item-section>
                 <q-item-label>Logout</q-item-label>
               </q-item-section>
@@ -29,17 +30,9 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Menu
-        </q-item-label>
+        <q-item-label header> Menu </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
@@ -50,86 +43,90 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view v-slot="{ Component }">
-        <transition
-          appear
-          enter-active-class="animated fadeInUp"
-          leave-active-class="animated fadeOutDown"
-        >
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
+import { defineComponent, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import EssentialLink from 'components/EssentialLink.vue'
-import DarkModeToogle from 'components/DarkModeToggle.vue'
+import UseAuthUser from '../composables/UseAuthUser'
+import useNotify from 'src/composables/UseNotify'
+import useDialog from 'src/composables/UseDialog'
+
+const mdiIcon = name => {
+  return 'mdi-' + name
+}
 
 const linksList = [
   {
-    title: 'Home',
-    caption: '',
-    icon: 'mdi-home',
+    title: 'Initial Setup',
+    caption: 'Main (home) page',
+    icon: mdiIcon('home'),
     routeName: 'me'
   },
   {
-    title: 'Category',
-    caption: '',
-    icon: 'mdi-shape-outline',
+    title: 'Categories',
+    caption: 'Registered categories',
+    icon: mdiIcon('shape-outline'),
     routeName: 'category'
   },
   {
-    title: 'Product',
-    caption: '',
-    icon: 'mdi-archive',
+    title: 'Products',
+    caption: 'Registered products',
+    icon: mdiIcon('basket-outline'),
     routeName: 'product'
-  },
-  {
-    title: 'Config',
-    caption: '',
-    icon: 'mdi-cog',
-    routeName: 'form-config'
   }
 ]
-
-import { defineComponent, ref, onMounted } from 'vue'
-import useAuthUser from 'src/composables/UseAuthUser'
-import useApi from 'src/composables/UseApi'
-import { useRouter } from 'vue-router'
-import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink,
-    DarkModeToogle
+    EssentialLink
   },
 
   setup () {
     const leftDrawerOpen = ref(false)
-
-    const $q = useQuasar()
     const router = useRouter()
-    const { logout } = useAuthUser()
-    const { getBrand } = useApi()
+    const { logout } = UseAuthUser()
+    const { notifyError, notifySuccess } = useNotify()
+    const { dialogShow } = useDialog()
 
-    onMounted(() => {
-      getBrand()
-    })
+    const changePassword = async () => {
+      router.push('reset-password')
+    }
 
-    const handleLogout = async () => {
-      $q.dialog({
-        title: 'Logout',
-        message: 'Do you really want to leave ?',
-        cancel: true,
-        persistent: true
-      }).onOk(async () => {
-        await logout()
-        router.replace({ name: 'login' })
+    const handlerLogout = async () => {
+      dialogShow({
+        tittle: 'Are your sure?',
+        message: 'Are your sure you want to log out of the application?'
+        // tittle: 'Sair',
+        // message: 'Deseja realmente sair da aplicação?'
       })
+        .onOk(async () => {
+          try {
+            await logout()
+            await router
+              .replace({
+                name: 'login'
+              })
+              .then(notifySuccess('Bye bye! 😁'))
+          } catch (error) {
+            notifyError(error.message)
+          }
+          /** replace eliminates route history, unlike
+           * push, which adds to history stack
+           *
+           * o replace elimina o histórico de rotas, diferente
+           * do push, que adicionar na pilha de histórico
+           */
+        })
+        .onCancel(async () => {
+          notifySuccess('Glad you changed your mind! 😁') // Ops, ia mas voltou!
+        })
     }
 
     return {
@@ -138,7 +135,8 @@ export default defineComponent({
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
-      handleLogout
+      handlerLogout,
+      changePassword
     }
   }
 })

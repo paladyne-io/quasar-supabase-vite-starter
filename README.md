@@ -1,23 +1,24 @@
-# Quasar Estoque Supabase (quasar-estoque-supabase)
+# Quasar Supabase Vite Starter (quasar-supabase-vite-starter)
 
-Project built on the Youtube Quasar + Supabase course: [Playlist on Youtube](https://www.youtube.com/watch?v=6ep8cy6pP74&list=PLBjvYfV_TvwIfgvouZCaLtgjYdrWQL02d&index=1)
+Translated the original project to English with the following changes:
 
-## Init Config
+1) Use vite instead of Webpack
+2) Use Supabase V2 JavaScript client (Released in August and still RC at this time)
+3) Added a second Supabase boot file to access the Router (Intention is to redirect the Password reset. Requires further testing)
+ToDo
 
-You are required to configure the ***quasar.conf.js*** file with your supabase credentials.
+Improve image loading on the (new) Product page.
 
-```js
-build: {
-  env: {
-    SUPABASE_URL: 'XXXX',
-    SUPABASE_KEY: 'YYYY'
-  }
-}
-```
+
+Comments and suggestions are welcome
+
+Added a Change Password item to the Logout menu - (The password can only be changed when the user is logged in.)
 
 ## Install the dependencies
 ```bash
 yarn
+# or
+npm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
@@ -25,10 +26,15 @@ yarn
 quasar dev
 ```
 
+
 ### Lint the files
 ```bash
-yarn run lint
+yarn lint
+# or
+npm run lint
 ```
+
+
 
 ### Build the app for production
 ```bash
@@ -36,4 +42,4 @@ quasar build
 ```
 
 ### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).

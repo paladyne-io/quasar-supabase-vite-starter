@@ -3,7 +3,17 @@
     <q-header elevated>
       <q-toolbar>
         <q-toolbar-title>
-          Quasar Estoque Supabase
+          <q-icon
+            name="store"
+            size="1.4em"
+            @click="
+              this.$router.push({
+                name: 'login'
+              })
+            "
+            class="cursor-pointer"
+          />
+          Quasar Store
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
@@ -15,19 +25,9 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from 'vue'
-import useApi from 'src/composables/UseApi'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'LoginLayout',
-
-  setup () {
-    const { getBrand } = useApi()
-    onMounted(() => {
-      getBrand()
-    })
-    return {
-    }
-  }
+  name: 'LoginLayout'
 })
 </script>

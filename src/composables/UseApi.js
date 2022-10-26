@@ -1,87 +1,77 @@
 import useSupabase from 'src/boot/supabase'
-import useAuthUser from './UseAuthUser'
+import UseAuthUser from 'src/composables/UseAuthUser'
 import { v4 as uuidv4 } from 'uuid'
-import { useRoute } from 'vue-router'
-import useBrand from 'src/composables/UseBrand'
-import { ref } from 'vue'
-import { useQuasar } from 'quasar'
 
-const brand = ref({
-  primary: '',
-  secondary: '',
-  name: '',
-  phone: '',
-  paralax_url: ''
-})
-
-export default function useApi () {
+export default function useApi() {
   const { supabase } = useSupabase()
-  const { user } = useAuthUser()
-  const route = useRoute()
-  const { setBrand } = useBrand()
-  const $q = useQuasar()
+  const { user } = UseAuthUser()
 
-  const list = async (table) => {
-    const { data, error } = await supabase
-      .from(table)
-      .select('*')
+  /**
+   * Retorna todos dos dados disponiveis na tabela passada como parâmetro.
+   */
+  const list = async table => {
+    const { data, error } = await supabase.from(table).select('*')
     if (error) throw error
     return data
   }
 
-  const listPublic = async (table, userId, columnFilter = '', filter = '') => {
-    const { data, error } = await supabase
-      .from(table)
-      .select('*')
-      .eq('user_id', userId)
-      .eq(columnFilter, filter)
-    if (error) throw error
-    return data
-  }
-
-  const fetchCount = async (table, userId) => {
-    const { data, error, count } = await supabase
-      .from(table)
-      .select('*', { count: 'exact' })
-      .eq('user_id', userId)
-    if (error) throw error
-    return {
-      data,
-      count
-    }
-  }
-
+  /**
+   * Retorna uma tupla da tabela passada como parâmetro
+   * de acordo com o id, também passado como parêmtro.
+   */
   const getById = async (table, id) => {
+    console.log('Get by ID: ' + id + ' from table: ' + table)
     const { data, error } = await supabase
       .from(table)
       .select('*')
       .eq('id', id)
+      .single() // necessary or use data[0]
+    console.log('error: ' + JSON.stringify(error))
     if (error) throw error
-    return data[0]
+    console.log('data: ' + JSON.stringify(data))
+    return data
+    /**
+     * como a busca é por id, caso encontre, basta se retorne o primeiro elemento.
+     */
   }
 
+  /**
+   * Adiciona uma tupla populada na tabela passada como parâmetro
+   * usando os dados do formulário passado como parâmetro.
+   */
   const post = async (table, form) => {
-    const { data, error } = await supabase
-      .from(table)
-      .insert([
-        {
-          ...form,
-          user_id: user.value.id
-        }
-      ])
+    const { data, error } = await supabase.from(table).insert([
+      {
+        ...form, // todos os parâmetros do form
+        user_id: user.value.id
+      }
+    ])
+    // console.log('Post - user_id: ' + user.value.id)
     if (error) throw error
     return data
+    // return data[0]
   }
 
+  /**
+   * Atualiza uma tupla na tabela passada como parâmetro
+   * usando os dados do formulário passado como parâmetro.
+   */
   const update = async (table, form) => {
     const { data, error } = await supabase
       .from(table)
-      .update({ ...form })
-      .match({ id: form.id })
+      .update({
+        ...form
+      })
+      .match({ id: form.id }) // same as "where t.id = form.id"
     if (error) throw error
+    // return data[0]
     return data
   }
 
+  /**
+   * Remove/Deleta uma tupla na tabela passada como parâmetro
+   * usando o id passado como parâmetro.
+   */
   const remove = async (table, id) => {
     const { data, error } = await supabase
       .from(table)
@@ -91,59 +81,51 @@ export default function useApi () {
     return data
   }
 
+  /**
+   *
+   */
+
   const uploadImg = async (file, storage) => {
     const fileName = uuidv4()
-    const { error } = supabase
-      .storage
-      .from(storage)
-      .upload(fileName, file, {
-        cacheControl: '3600',
-        upsert: false
-      })
+    /*
+    const { error } = supabase.storage.from(storage).upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    })
+    */
+
+    const { error } = supabase.storage.from(storage).upload(fileName, file)
+
+    console.log('upload error: ' + JSON.stringify(error))
+    console.log('uploaded file: ' + JSON.stringify(file))
+    console.log('uploaded: ' + file.name + ' to ' + storage)
+
     const publicUrl = await getUrlPublic(fileName, storage)
+    // console.log('get publicUrl (image) for file: ' + fileName + '...')
     if (error) throw error
+    // console.log('publicUrl (image): ' + publicUrl)
     return publicUrl
   }
 
-  const getUrlPublic = async (fileName, storage) => {
-    const { publicURL, error } = supabase
-      .storage
-      .from(storage)
-      .getPublicUrl(fileName)
-    if (error) throw error
-    return publicURL
-  }
+  /**
+   *
+   */
 
-  const getBrand = async () => {
-    const id = route.params.id || user?.value?.id
-    if (id) {
-      $q.loading.show({
-        backgroundColor: 'dark'
-      })
-      const { data, error } = await supabase
-        .from('config')
-        .select('*')
-        .eq('user_id', id)
-      if (error) throw error
-      if (data.length > 0) {
-        brand.value = data[0]
-        setBrand(brand.value.primary, brand.value.secondary)
-      }
-      $q.loading.hide()
-      return brand
-    }
+  const getUrlPublic = async (filePath, storage) => {
+    console.log('Geting UrlPublic for: ' + filePath)
+    const { data, error } = supabase.storage
+      .from(storage)
+      .getPublicUrl(filePath)
+    if (error) throw error
+    return data.publicUrl
   }
 
   return {
     list,
-    listPublic,
-    fetchCount,
     getById,
     post,
     update,
     remove,
-    uploadImg,
-    getBrand,
-    brand
+    uploadImg
   }
 }
