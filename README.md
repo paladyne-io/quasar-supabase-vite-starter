@@ -6,8 +6,8 @@ Translation of the original project to English with the following changes:
 2) Use Supabase V2 JavaScript client. (Released in August and still Release Candidate status at this time.)
 3) Added a second Supabase boot file (supabase-monitor.js) to access the Quasar/Vue Router. (Intention is to redirect the PASSWORD_RECOVERY event. Requires further testing.)
 4) Added a 'Change Password' option in the Logout menu. The password can only be changed when the user is logged in.
-5) Added image preview/thumbnail in Product form (Max. image size is 3MB.)
-6) Added Dark-mode switching (in toolbar)
+5) Added image preview/thumbnail in new/edit product forms. (Max. image size is 3MB.)
+6) Added Dark-mode switching (in toolbar.)
 
 ## ToDo
 

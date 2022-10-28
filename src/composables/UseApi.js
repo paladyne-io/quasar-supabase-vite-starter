@@ -87,16 +87,15 @@ export default function useApi() {
 
   const uploadImg = async (file, storage) => {
     const fileName = uuidv4()
-    /*
+
     const { error } = supabase.storage.from(storage).upload(fileName, file, {
       cacheControl: '3600',
       upsert: false
     })
-    */
 
-    const { error } = supabase.storage.from(storage).upload(fileName, file)
+    // const { error } = supabase.storage.from(storage).upload(fileName, file)
 
-    console.log('upload error: ' + JSON.stringify(error))
+    // console.log('upload error: ' + JSON.stringify(error))
     console.log('uploaded file: ' + JSON.stringify(file))
     console.log('uploaded: ' + file.name + ' to ' + storage)
 

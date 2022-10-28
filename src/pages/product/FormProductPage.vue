@@ -14,11 +14,12 @@
           <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-md">
             <div class="row">
               <div class="q-pr-md">
-                <q-img width="64px" fit="contain" :src="form.img_url" />
+                <img width="60" fit="contain" :src="form.img_url" />
               </div>
               <!-- Max file size = 3MB -->
               <div>
                 <q-file
+                  outlined
                   label="Choose image"
                   max-file-size="3000000"
                   stack-label
@@ -174,10 +175,9 @@ export default defineComponent({
           // .length  > 0
           // const imageUrl = URL.createObjectURL(img.value)
           // console.log('Upload imageUrl: ' + JSON.stringify(imageUrl))
-
           const imgUrl = await uploadImg(img.value, 'products')
-          // form.value.img_url = imgUrl
-          form.value.img_url = URL.createObjectURL(img.value)
+          form.value.img_url = imgUrl
+          // form.value.img_url = URL.createObjectURL(img.value)
           console.log('img URL: ' + imgUrl)
         }
         if (isUpdate.value) {

@@ -19,9 +19,11 @@
         />
       </form>
       -->
+      <!--
       <div class="full-width text-center">
         <q-toggle v-model="darkModeStatus" label="Dark mode" @click="toggled" />
       </div>
+     -->
     </div>
     <div v-else>
       <q-img src="~assets/howdy.gif" width="120" class="q-my-lg"> </q-img>
@@ -109,8 +111,8 @@ export default defineComponent({
     return {
       user,
       avatarUrl,
-      darkModeStatus,
-      toggled,
+      // darkModeStatus
+      // toggled,
       updateProfile
     }
   }
